@@ -11,9 +11,29 @@ import base64
 from oauth2client.service_account import ServiceAccountCredentials
 from pandas.io.json import json_normalize
 
-# Creates a cache and allows data to be stored to ensure faster running
-@st.cache(persist=True)
-@st.cache(suppress_st_warning=True)
+import tornado
+from tornado.iostream import StreamClosedError
+
+class SomeBaseHandler(tornado.web.RequestHandler):
+
+    def mc_get(self, key, default=None):
+        """ Additional interlayer for debug and logging requested keys from memcached
+
+        Args:
+            key (str): name of key in memcached
+            default: default value, returns if key not exists
+
+        Returns:
+            obj
+        """
+        try:
+            return yield self.mc.get(key, default)
+        except StreamClosedError as e:
+            self.mc.pool.clear()
+            # Here you can raise own exception
+            return default
+
+    # …
 
 # ----------------------------------------------------------------------------------------------------------------------
 
