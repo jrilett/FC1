@@ -11,10 +11,6 @@ import base64
 from oauth2client.service_account import ServiceAccountCredentials
 from pandas.io.json import json_normalize
 
-# Creates a cache and allows data to be stored to ensure faster running
-@st.cache(persist=True)
-@st.cache(suppress_st_warning=True)
-
 # ----------------------------------------------------------------------------------------------------------------------
 
 # Layout functions
